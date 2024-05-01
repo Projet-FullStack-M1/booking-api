@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const prisma = require("../../prisma/prisma");
-
+const jwt = require("jsonwebtoken");
 exports.register = async (req, res) => {
   const { username, email, password } = req.body;
 
@@ -53,11 +53,31 @@ exports.login = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
     // If everything is correct, send the user a JWT
-    res.setHeader("Set-Cookie", "test=" + "myValue").json("success");
+    // res.setHeader("Set-Cookie", "test=" + "myValue").json("success");
+
+    const age = 1000 * 24 * 60 * 60 * 7;
+    const token = jwt.sign(
+      {
+        id: user.id,
+      },
+      process.env.JWT_SECRET_Key,
+      { expiresIn: age }
+    );
+
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+        // secure : true
+        maxAge: age,
+      })
+      .status(200)
+      .json({ message: "Login successful" });
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Failed to login ! " });
   }
 };
 
-exports.logout = async (req, res) => {};
+exports.logout = async (req, res) => {
+  res.clearCookie("token").status(200).json({ message: "Logout successful" });
+};
