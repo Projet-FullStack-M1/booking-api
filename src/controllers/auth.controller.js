@@ -26,6 +26,9 @@ exports.register = async (req, res) => {
         password: hashedPassword,
       },
     });
+    console.log(newUser);
+
+    // send an email to the new user and return a 201 status with a success message
 
     console.log(newUser);
     res.status(201).json({ message: "User created successfully" });
