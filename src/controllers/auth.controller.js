@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const prisma = require("../../prisma/prisma");
 const jwt = require("jsonwebtoken");
+const sendEmail = require("../utils/sendMail");
 exports.register = async (req, res) => {
   const { username, email, password } = req.body;
 
@@ -26,7 +27,19 @@ exports.register = async (req, res) => {
       },
     });
 
-    // send an email to the new user and return a 201 status with a success message
+    // send an email to the new user
+    await sendEmail(
+      newUser.email,
+      "Confirmation d'inscription",
+      `Bonjour ${newUser.username},\n\nVotre inscription sur notre plateforme a été confirmée avec succès.\n\nCordialement,\nL'équipe de notre plateforme`
+    );
+
+    // Envoi d'un e-mail à l'administrateur
+    await sendEmail(
+      process.env.ADMIN_EMAIL,
+      "[Admin] - Nouvelle inscription",
+      `Bonjour Admin,\n\nUn nouvel utilisateur s'est inscrit sur la plateforme avec l'adresse e-mail suivante : ${newUser.email}.\n\nCordialement,\nL'équipe de notre plateforme`
+    );
 
     console.log(newUser);
     res.status(201).json({ message: "User created successfully" });
