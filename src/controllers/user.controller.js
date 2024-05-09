@@ -30,14 +30,13 @@ exports.getUser = async (req, res) => {
 exports.updateUser = async (req, res) => {
   const id = req.params.id;
   const tokenUserId = req.userId;
-
   const { password, avatar, ...inputs } = req.body;
-  // compare the user id from the token with the id from the request
-  if (tokenUserId !== id) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
-  let updatedPassword = null;
 
+  if (id !== tokenUserId) {
+    return res.status(403).json({ message: "Not Authorized!" });
+  }
+
+  let updatedPassword = null;
   try {
     if (password) {
       updatedPassword = await bcrypt.hash(password, 10);
@@ -51,10 +50,13 @@ exports.updateUser = async (req, res) => {
         ...(avatar && { avatar }),
       },
     });
-    res.status(200).json(updatedUser);
+
+    const { password: userPassword, ...rest } = updatedUser;
+
+    res.status(200).json(rest);
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: "Failed to update user" });
+    res.status(500).json({ message: "Failed to update users!" });
   }
 };
 

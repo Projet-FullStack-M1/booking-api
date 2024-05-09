@@ -5,7 +5,7 @@ exports.verifyToken = (req, res, next) => {
 
   if (!token) {
     return res.status(401).json({
-      message: "Not logged in",
+      message: "Not authenticated",
     });
   }
   jwt.verify(token, process.env.JWT_SECRET_KEY, (err, payload) => {
