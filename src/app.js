@@ -11,7 +11,7 @@ app.get("/", (req, res) => {
 // middleware routes
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 app.use(cookieParser());
 app.use("/api/v1", apiRouter);
 app.listen(8000, () => {
