@@ -14,6 +14,6 @@ app.use(express.json());
 app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 app.use(cookieParser());
 app.use("/api/v1", apiRouter);
-app.listen(8000, () => {
-  console.log("Example app listening on port 8000!");
+app.listen(process.env.PORT, () => {
+  console.log(`Example app listening on port ${process.env.PORT}!`);
 });
