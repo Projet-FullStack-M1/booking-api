@@ -75,7 +75,7 @@ exports.login = async (req, res) => {
         id: user.id,
         isAdmin: false,
       },
-      process.env.JWT_SECRET_Key,
+      process.env.JWT_SECRET_KEY,
       { expiresIn: age }
     );
 
