@@ -64,24 +64,17 @@ exports.deleteUser = async (req, res) => {
   const id = req.params.id;
   const tokenUserId = req.userId;
 
-  // compare the user id from the token with the id from the request
-  if (tokenUserId !== id) {
-    return res.status(401).json({ message: "Unauthorized" });
+  if (id !== tokenUserId) {
+    return res.status(403).json({ message: "Not Authorized!" });
   }
+
   try {
-    const { id } = req.params;
-    const user = await prisma.user.findUnique({
-      where: { id: parseInt(id) },
-    });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
     await prisma.user.delete({
-      where: { id: parseInt(id) },
+      where: { id },
     });
-    res.status(200).json({ message: "User deleted successfully" });
+    res.status(200).json({ message: "User deleted" });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: "Failed to delete user" });
+    res.status(500).json({ message: "Failed to delete users!" });
   }
 };
