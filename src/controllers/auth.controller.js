@@ -67,9 +67,9 @@ exports.login = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
     // If everything is correct, send the user a JWT
-    // res.setHeader("Set-Cookie", "test=" + "myValue").json("success");
 
-    const age = 1000 * 24 * 60 * 60 * 7;
+    // mettre l'age du cookie d'une heure
+    const age = 1000 * 60 * 60;
     const token = jwt.sign(
       {
         id: user.id,
@@ -86,7 +86,7 @@ exports.login = async (req, res) => {
     res
       .cookie("token", token, {
         httpOnly: true,
-        secure: true,
+        secure: process.env.NODE_ENV === "production",
         maxAge: age,
       })
       .status(200)
