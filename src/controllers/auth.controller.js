@@ -69,14 +69,13 @@ exports.login = async (req, res) => {
     // If everything is correct, send the user a JWT
 
     // mettre l'age du cookie d'une heure
-    const age = 1000 * 60 * 60;
     const token = jwt.sign(
       {
         id: user.id,
         isAdmin: false,
       },
       process.env.JWT_SECRET_KEY,
-      { expiresIn: age }
+      { expiresIn: "1h" }
     );
 
     // send the user information
@@ -87,7 +86,7 @@ exports.login = async (req, res) => {
       .cookie("token", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        maxAge: age,
+        maxAge: 3600000,
       })
       .status(200)
       .json(userInfo);
