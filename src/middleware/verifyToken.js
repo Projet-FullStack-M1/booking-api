@@ -7,7 +7,7 @@ exports.verifyToken = (req, res, next) => {
   } else {
     token = req.cookies.token; // Utilisez le cookie si le header n'est pas présent
   }
-  console.log("TOKEN", token);
+  console.log("TOKEN :", token);
 
   if (!token) {
     return res.status(401).json({
