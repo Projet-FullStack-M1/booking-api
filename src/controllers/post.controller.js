@@ -1,25 +1,11 @@
 const prisma = require("../../prisma/prisma");
-
+const { ObjectId } = require("bson");
 // Récupérer tous les posts
 exports.getPosts = async (req, res) => {
   // const query = req.query; // Récupère les paramètres de la requête
   // console.log(query);
   try {
-    const posts = await prisma.post
-      .findMany
-      //   {
-      //   where: {
-      //     city: query.city || undefined,
-      //     type: query.type || undefined,
-      //     property: query.property || undefined,
-      //     bedroom: parseInt(query.bedroom) || undefined,
-      //     price: {
-      //       gte: parseInt(query.minPrice) || 0,
-      //       lte: parseInt(query.maxPrice) || 10000000,
-      //     },
-      //   }, // Cherche tous les posts avec les paramètres de la requête
-      // }
-      (); // Récupère tous les posts
+    const posts = await prisma.post.findMany(); // Récupère tous les posts
     res.status(200).json(posts); // Envoie les posts avec un statut 200
   } catch (err) {
     console.log(err); // Affiche l'erreur dans la console
@@ -27,12 +13,17 @@ exports.getPosts = async (req, res) => {
   }
 };
 
-// Récupérer un post par ID
 exports.getPost = async (req, res) => {
   const id = req.params.id; // Récupère l'ID du post à partir des paramètres de la requête
+
+  if (!ObjectId.isValid(id)) {
+    return res.status(400).json({ message: "Invalid post ID" });
+  }
+
   try {
+    const objectId = new ObjectId(id);
     const post = await prisma.post.findUnique({
-      where: { id }, // Cherche le post par ID
+      where: { id: objectId.toHexString() }, // Cherche le post par ID
       include: {
         postDetail: true, // Inclut les détails du post
         user: {
@@ -43,6 +34,11 @@ exports.getPost = async (req, res) => {
         },
       },
     });
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
     res.status(200).json(post); // Envoie le post trouvé avec un statut 200
   } catch (err) {
     console.log(err); // Affiche l'erreur dans la console
