@@ -2,21 +2,24 @@ const prisma = require("../../prisma/prisma");
 
 // Récupérer tous les posts
 exports.getPosts = async (req, res) => {
-  const query = req.query; // Récupère les paramètres de la requête
-  console.log(query);
+  // const query = req.query; // Récupère les paramètres de la requête
+  // console.log(query);
   try {
-    const posts = await prisma.post.findMany({
-      where: {
-        city: query.city || undefined,
-        type: query.type || undefined,
-        property: query.property || undefined,
-        bedroom: parseInt(query.bedroom) || undefined,
-        price: {
-          gte: parseInt(query.minPrice) || 0,
-          lte: parseInt(query.maxPrice) || 10000000,
-        },
-      }, // Cherche tous les posts avec les paramètres de la requête
-    }); // Récupère tous les posts
+    const posts = await prisma.post
+      .findMany
+      //   {
+      //   where: {
+      //     city: query.city || undefined,
+      //     type: query.type || undefined,
+      //     property: query.property || undefined,
+      //     bedroom: parseInt(query.bedroom) || undefined,
+      //     price: {
+      //       gte: parseInt(query.minPrice) || 0,
+      //       lte: parseInt(query.maxPrice) || 10000000,
+      //     },
+      //   }, // Cherche tous les posts avec les paramètres de la requête
+      // }
+      (); // Récupère tous les posts
     res.status(200).json(posts); // Envoie les posts avec un statut 200
   } catch (err) {
     console.log(err); // Affiche l'erreur dans la console
