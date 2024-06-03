@@ -7,5 +7,6 @@ router.get("/all", userController.getUsers);
 router.get("/:id", verifyToken, userController.getUser);
 router.put("/:id", verifyToken, userController.updateUser);
 router.delete("/:id", verifyToken, userController.deleteUser);
+router.post("/save", verifyToken, userController.savePost);
 
 module.exports = router;
